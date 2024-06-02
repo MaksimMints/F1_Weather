@@ -1,12 +1,9 @@
 import * as React from "react";
-import  { useState } from "react";
 import axios from "axios";
-import "../styles/Widget.css";
+import "../styles/FiveDays.css";
 
 function FiveDays(props) {
-    const days =["Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"];
-    const date = new Date();
-    
+   
     return (
         <div className="widget">
             <div className="panel">

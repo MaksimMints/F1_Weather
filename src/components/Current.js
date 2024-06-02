@@ -1,7 +1,8 @@
 import * as React from "react";
 import  { useState } from "react";
 import axios from "axios";
-import "../styles/Widget.css";
+import '../styles/Current.css';
+
 
 
 function Current(props) {
@@ -11,7 +12,7 @@ function Current(props) {
     return (
         <div className="current">
             <div className="weather-left">
-                <div className="weather-city">{props.city}</div>
+                
                 <h2 className="date"> {date.toLocaleDateString()}, {days[date.getDay()]} </h2>
                 <img src={`https://openweathermap.org/img/wn/${props.icon}.png`} alt="" width="100" />
                 <div className="desc-main">{props.description}</div>

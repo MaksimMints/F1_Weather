@@ -1,5 +1,8 @@
 import React, {useState} from "react";
 import axios from "axios";
+import Current from "./Current";
+import FiveDays from "./FiveDays";
+import "../styles/MyWeather.css";
 
 const api = {
     key: 'f025f4dd60a0cc5711c6e7c16c9852a8',
@@ -16,7 +19,7 @@ function MyWeather() {
     const [lon, setLon] = useState();
 
     // действия с данными погоды
-    const [weather, setWeather] = useState({});
+    const [weather, setWeather] = useState([]);
     const [current, setCurrent] = useState([]);
     const [description, setDescription] = useState([]);
     const [temp, setTemp] = useState([]);
@@ -28,7 +31,7 @@ function MyWeather() {
         axios.get(`${api.base_today}weather?lat=${lat}&lon=${lon}&appid=${api.key}&units=metric&lang=ru`)
         .then (
             res => {
-                setCurrent(res.data.current);
+                setCurrent(res.data.main);
                 setDescription(res.data.weather[0].description);
                 setTemp(res.data.main.temp);
                 setWind_speed(res.data.wind.speed);
@@ -37,15 +40,18 @@ function MyWeather() {
                 console.log('res.data ', res.data)
             }
         )
+        //*.catch(e => console.error(e))
     }
 
     const fiveDaysWeather = () => {
         axios.get(`${api.base_today}forecast?lat=${lat}&lon=${lon}&cnt=5&appid=${api.key}&units=metric&lang=ru`)
         .then (
             res => {
+                setWeather(res.data.list)
                 console.log('res.data ', res.data)
             }
         )
+        
     }    
 
     const search = evt => {
@@ -64,38 +70,61 @@ function MyWeather() {
     }
 
     // форматирование даты
-    const format_date = (d) => {
-        let months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
-        let days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+    // const format_date = (d) => {
+    //     let months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+    //     let days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
     
-        let day = days[d.getDay()];
-        let date = d.getDate();
-        let month = months[d.getMonth()];
-        let year = d.getFullYear();
+    //     let day = days[d.getDay()];
+    //     let date = d.getDate();
+    //     let month = months[d.getMonth()];
+    //     let year = d.getFullYear();
     
-        return `${day} ${date} ${month} ${year}`
-    }
+    //     return `${day} ${date} ${month} ${year}`
+    // }
         
     // JSX разметка
     return (
-    <div className={(typeof weather.main != 'undefined') ? ((weather.main.temp > 16) ? 'app warm' : 'app') : 'app'}>
-        <div className='search-box'>
-            <input
-            type='text'
-            className='search-bar'
-            placeholder='Поиск...'
-            onChange={e => setCity(e.target.value)}
-            value={city}
-            onKeyDown={search}
-            />
-        </div>
-        <div>
-            <button onClick={e => currentWeather()}>Сегодня</button>
-            <button onClick={e => fiveDaysWeather()}>На 5 дней</button>
-        </div>
-        
-    </div>                        
-    )  
+        <div className='app warm'>
+            <div className='search-box'>
+                <h2>Введите название города и нажмите Enter</h2>
+                <input
+                type='text'
+                className='search-bar'
+                //placeholder='Введите название города и нажмите Enter'
+                onChange={e => setCity(e.target.value)}
+                value={city}
+                onKeyDown={search}
+                />
+            </div>
+            <div>
+                <button onClick={e => currentWeather()}>Сегодня</button>
+                <button onClick={e => fiveDaysWeather()}>На 5 дней</button>
+            </div>
+    
+            {
+              current && <div>
+                          <div className="city">{city}</div>
+                          <div className="widgets">                
+                                <Current key1={api.key} lat={lat} lon={lon} city={city} icon={pict}
+                                description={description} feels_like={feels_like} temp={temp} wind_speed={wind_speed}/>
+              </div>
+            </div>
+            }
+    
+            { weather && <div>
+                          <div className="city">{city}</div>
+                          <div className="widgets">
+    
+                              {weather && weather.map((value,index) => {
+                                  return <FiveDays day={index} temp={value.main.temp} icon={value.weather[0].icon} key={value.dt}/>
+                                }
+                              )}
+                          </div>
+                      </div>
+            }
+    
+        </div>                        
+        )  
 
 }
 

@@ -15,3 +15,7 @@ div.temp {
     color: rgba(0,0,0,0.9);
 }
 
+.widgets {
+    display: flex;
+    flex-flow: row wrap;
+}    

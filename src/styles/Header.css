@@ -1,6 +1,7 @@
 header {
     color:white;
-    background: black;
+    background: rgb(110, 109, 109);
+    font-family: 'montseratt', sans-serif;
     font-size: 3rem;
     height: 80px;
     display: flex;
